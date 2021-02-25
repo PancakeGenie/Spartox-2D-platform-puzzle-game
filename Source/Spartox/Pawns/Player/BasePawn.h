@@ -18,10 +18,19 @@ public:
 	// Functions
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInput) override;
 
+	UFUNCTION(BlueprintCallable)
+		void SetCanPawnJump(bool canPawnJump);
+	bool GetCanPawnJump();
+
+	UFUNCTION(BlueprintCallable)
+		void SetCanPawnSwitch(bool canPawnSwitch);
+	bool GetCanPawnSwitch();
+
 protected:
 	// Variables
 	bool isPlayerAlive;
 	bool canJump;
+	bool canSwitch;
 
 	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere)
 		class UPawnSkills* PawnSkillsRef;

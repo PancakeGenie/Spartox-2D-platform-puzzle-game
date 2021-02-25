@@ -21,7 +21,7 @@ void ATutorial_BaseTriggerBox::OnOverlap(AActor* OtherActor, AActor* PlayerActor
 	// Check trigger box was overlapped and if overlapping actor was player pawn
 	if (bOverlapped == false && PlayerActor == PawnActorRef)
 	{
-		OnTrigger();
+		OnTrigger();			// Blueprint implementation
 		bOverlapped = true;
 	}
 }

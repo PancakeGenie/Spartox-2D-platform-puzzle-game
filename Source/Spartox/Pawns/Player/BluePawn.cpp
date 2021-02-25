@@ -4,5 +4,5 @@
 
 ABluePawn::ABluePawn()
 {
-	canJump = false;
+	
 }

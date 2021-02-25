@@ -12,21 +12,15 @@ class SPARTOX_API ASpartox_GameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	// Variables
-	bool isRedPawn;
-
 	// Functions
-	void SwitchPlayer();
+	virtual void SwitchPlayer();
 
 protected:
-	// Functions
-	virtual void BeginPlay();
-
-private:
-	// Variables
+	// Variables/Handles
 	class ARedPawn* RedPawn;
 	class ABluePawn* BluePawn;
 	APlayerController* PlayerControllerRef;
+
 
 	// Functions
 	void HandlePlayerStart();

@@ -12,6 +12,7 @@ void ASpartox_GameModeBase::BeginPlay()
 
 void ASpartox_GameModeBase::HandlePlayerStart()
 {
+	// Assign handle values
 	RedPawn = Cast<ARedPawn>(UGameplayStatics::GetActorOfClass(GetWorld(), ARedPawn::StaticClass()));
 	BluePawn = Cast<ABluePawn>(UGameplayStatics::GetActorOfClass(GetWorld(), ABluePawn::StaticClass()));
 	PlayerControllerRef = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
@@ -23,6 +24,7 @@ void ASpartox_GameModeBase::HandlePlayerStart()
 		UE_LOG(LogTemp, Warning, TEXT("BluePawn: %s"), *BluePawn->GetName());
 	*/
 
+	// Possess BluePawn (Blue player)
 	InitialPossession();
 }
 
@@ -37,7 +39,6 @@ void ASpartox_GameModeBase::InitialPossession()
 
 	// Assign player to start as Blue pawn
 	PlayerControllerRef->Possess(BluePawn);
-	isRedPawn = false;
 }
 
 void ASpartox_GameModeBase::SwitchPlayer()
@@ -54,7 +55,5 @@ void ASpartox_GameModeBase::SwitchPlayer()
 	{
 		PlayerControllerRef->Possess(BluePawn);
 		isRedPawn = false;
-
-		return;
 	}
 }

@@ -33,6 +33,7 @@ ABasePawn::ABasePawn()
 	// Default values
 	isPlayerAlive = true;
 	canJump = true;
+	canSwitch = true;
 }
 
 void ABasePawn::BeginPlay()
@@ -112,4 +113,24 @@ void ABasePawn::SwitchPlayer()
 void ABasePawn::SetIsPlayerAlive(bool setIsPlayerAlive)
 {
 	isPlayerAlive = setIsPlayerAlive;
+}
+
+void ABasePawn::SetCanPawnJump(bool canPawnJump)
+{
+	canJump = canPawnJump;
+}
+
+bool ABasePawn::GetCanPawnJump()
+{
+	return canJump;
+}
+
+void ABasePawn::SetCanPawnSwitch(bool canPawnSwitch)
+{
+	canSwitch = canPawnSwitch;
+}
+
+bool ABasePawn::GetCanPawnSwitch()
+{
+	return canSwitch;
 }
