@@ -21,6 +21,7 @@ Things to fix soon:
 1) Jump (resets on horizontal collision with objects, needs to reset only if it hits the floor. So... needs to check Z impact point only)
 2) Player bounce of wall (pretty sure why this is happening, but not sure enough. Think it's because I am using "AddWorldOffset" function....needs more testing)
 3) Interactable object not sliding on level (basically floor collision is preventing the pushed object to slide because the pushed object hits the edge of the floor collision box)
+4) Camera stutter on collision (this might be related to 2. point, because "AddWorldOffset" wants to move, so camera moves but player stays on same spot so camera needs to move back...which causes the stutter to happen. Needs more testing)
 
 In future:
 1) Add particle effects
