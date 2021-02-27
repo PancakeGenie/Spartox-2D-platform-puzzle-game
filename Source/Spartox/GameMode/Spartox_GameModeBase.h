@@ -13,7 +13,7 @@ class SPARTOX_API ASpartox_GameModeBase : public AGameModeBase
 
 public:
 	// Functions
-	virtual void SwitchPlayer();
+	virtual void SwitchPlayer(bool& isRedPawn);
 
 protected:
 	// Variables/Handles
@@ -21,7 +21,10 @@ protected:
 	class ABluePawn* BluePawn;
 	APlayerController* PlayerControllerRef;
 
+	// Functions
+	virtual void BeginPlay();
 
+private:
 	// Functions
 	void HandlePlayerStart();
 	void InitialPossession();

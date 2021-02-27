@@ -12,7 +12,7 @@ class SPARTOX_API ASpartox_GameMode_Tutorial : public ASpartox_GameModeBase
 	GENERATED_BODY()
 	
 public:
-	virtual void SwitchPlayer() override;
+	virtual void SwitchPlayer(bool& isRedPawn) override;
 	
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 		void StartingWidget();

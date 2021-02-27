@@ -33,7 +33,7 @@ void ASpartox_GameModeBase::InitialPossession()
 	// Check if pawn exists
 	if (RedPawn == nullptr || BluePawn == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("RedPawn or BluePawn is empty"));
+		UE_LOG(LogTemp, Error, TEXT("RedPawn or BluePawn is empty!"));
 		return;
 	}
 
@@ -41,19 +41,15 @@ void ASpartox_GameModeBase::InitialPossession()
 	PlayerControllerRef->Possess(BluePawn);
 }
 
-void ASpartox_GameModeBase::SwitchPlayer()
+void ASpartox_GameModeBase::SwitchPlayer(bool& isRedPawn)
 {
-	if (isRedPawn == false)
+	// Check if pawn exists
+	if (RedPawn == nullptr || BluePawn == nullptr)
 	{
-		PlayerControllerRef->Possess(RedPawn);
-		isRedPawn = true;
-
+		UE_LOG(LogTemp, Error, TEXT("RedPawn or BluePawn is empty!"));
 		return;
 	}
 
-	if (isRedPawn == true)
-	{
-		PlayerControllerRef->Possess(BluePawn);
-		isRedPawn = false;
-	}
+	isRedPawn == false ? PlayerControllerRef->Possess(RedPawn) : PlayerControllerRef->Possess(BluePawn);
+	isRedPawn = !isRedPawn;
 }

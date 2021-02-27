@@ -10,17 +10,17 @@ void ASpartox_GameMode_Tutorial::BeginPlay()
 	Super::BeginPlay();
 
 	// Set specific default values for tutorial
-	BluePawn->SetCanPawnJump(false);
-	BluePawn->SetCanPawnSwitch(false);
+	BluePawn->SetCanPawnJump(true);
+	BluePawn->SetCanPawnSwitch(true);
 
 	StartingWidget();
 }
 
-void ASpartox_GameMode_Tutorial::SwitchPlayer()
+void ASpartox_GameMode_Tutorial::SwitchPlayer(bool& isRedPawn)
 {
 	// For tutorial, player can't switch until certain checkpoint is reached
 	if (BluePawn->GetCanPawnSwitch() == false)
 		return;
 
-	Super::SwitchPlayer();
+	Super::SwitchPlayer(isRedPawn);
 }

@@ -10,7 +10,4 @@ UCLASS()
 class SPARTOX_API ABluePawn : public ABasePawn
 {
 	GENERATED_BODY()
-
-public:
-	ABluePawn();
 };

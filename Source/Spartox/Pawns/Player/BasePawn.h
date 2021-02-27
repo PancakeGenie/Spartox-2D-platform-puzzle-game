@@ -28,21 +28,13 @@ public:
 
 protected:
 	// Variables
-	bool isPlayerAlive;
-	bool canJump;
-	bool canSwitch;
+	bool isPlayerAlive{ true };
+	static bool isRedPawn;
 
-	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere)
-		class UPawnSkills* PawnSkillsRef;
-
-	// Functions
-	virtual void BeginPlay();
-	virtual void SetIsPlayerAlive(bool setIsPlayerAlive);
-
-private:
-	// Variables
 	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere, META = (AllowPrivateAccess = "true"))
 		class UBoxComponent* MeshCollision_COL;
+	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere, META = (AllowPrivateAccess = "true"))
+		class UBoxComponent* DestructableBoxCollision_COL;
 	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere, META = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* BaseMesh_SM;
 	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere, META = (AllowPrivateAccess = "true"))
@@ -50,20 +42,31 @@ private:
 	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere, META = (AllowPrivateAccess = "true"))
 		class UCameraComponent* PlayerCamera_CAM;
 
+	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere)
+		class UPawnSkills* PawnSkillsRef;
+
+	// Functions
+	virtual void BeginPlay();
+	virtual void SetIsPlayerAlive(bool setIsPlayerAlive);
+	virtual void SwitchPlayer();
+
+private:
+	// Variables
 	UPROPERTY(Category = "Player Jump", BlueprintReadWrite, EditDefaultsOnly, META = (AllowPrivateAccess = "true"))
-		bool isJumping{ false };
+		bool canJump{ true };
 	UPROPERTY(Category = "Player Movement", BlueprintReadWrite, EditAnywhere, META = (AllowPrivateAccess = "true"))
 		float fMovementSpeed{ 800.f };
 	UPROPERTY(Category = "Player Jump", BlueprintReadWrite, EditAnywhere, META = (AllowPrivateAccess = "true"))
 		float fJumpForce{ 600.f };
 
 	class ASpartox_GameModeBase* GameModeRef;
+	float X_CollisionRange{ 5.f };
+	float Z_CollisionRange{ 2.f };
+	bool canSwitch{ true };
 
 	// Functions
 	void MoveRight(float ScaleValue);
 	void Jump();
-	void SwitchPlayer();
-
-	UFUNCTION()
-		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	bool MoveCollision(float& MovementDirection, float LineTrace_ZPosition);
+	bool CanJump(float LineTrace_XPosition);
 };
