@@ -30,10 +30,10 @@ ABasePawn::ABasePawn()
 	DestructableBoxCollision_COL->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 
 	SpringArm_SA = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
-	SpringArm_SA->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	SpringArm_SA->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
 	PlayerCamera_CAM = CreateDefaultSubobject<UCameraComponent>(TEXT("Player Camera"));
-	PlayerCamera_CAM->AttachToComponent(SpringArm_SA, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	PlayerCamera_CAM->AttachToComponent(SpringArm_SA, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
 	PawnSkillsRef = CreateDefaultSubobject<UPawnSkills>(TEXT("Player Skills"));
 }
@@ -63,7 +63,7 @@ void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInput)
 // ------------------------------------------------------------------------------------------------------------------------------
 void ABasePawn::MoveRight(float ScaleValue)
 {
-	if (ScaleValue != 0.f && isPlayerAlive == true)
+	if (ScaleValue != 0.f && canMove == true && isPlayerAlive == true)
 	{
 		if (MoveCollision(ScaleValue, -MeshCollision_COL->GetScaledBoxExtent().Z) == true || MoveCollision(ScaleValue, MeshCollision_COL->GetScaledBoxExtent().Z) == true)
 		{
@@ -93,8 +93,12 @@ bool ABasePawn::MoveCollision(float& MovementDirection, float LineTrace_ZPositio
 	else
 		EndLocation = FVector(StartLocation.X - MeshCollision_COL->GetScaledBoxExtent().X - X_CollisionRange, 0.f, StartLocation.Z);
 
+	// Ignore self actor, look Hit event only for other player
+	TraceParams.AddIgnoredActor(this);
+
 	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 2.f);
-	return GetWorld()->LineTraceSingleByChannel(HitCollision, StartLocation, EndLocation, ECC_Visibility, TraceParams);
+
+	return GetWorld()->LineTraceSingleByChannel(HitCollision, StartLocation, EndLocation, ECC_Pawn, TraceParams);
 }
 
 void ABasePawn::Jump()
@@ -123,8 +127,11 @@ bool ABasePawn::CanJump(float LineTrace_XPosition)
 	FVector EndLocation{StartLocation.X, 0.f, StartLocation.Z - MeshCollision_COL->GetScaledBoxExtent().Z - Z_CollisionRange };
 	FCollisionQueryParams TraceParams;
 
+	// Ignore self actor, look Hit event only for other player
+	TraceParams.AddIgnoredActor(this);
+
 	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, false, 2.f);
-	return GetWorld()->LineTraceSingleByChannel(HitCollision, StartLocation, EndLocation, ECC_Visibility, TraceParams);
+	return GetWorld()->LineTraceSingleByChannel(HitCollision, StartLocation, EndLocation, ECC_Pawn, TraceParams);
 }
 // ------------------------------------------------------------------------------------------------------------------------------
 
@@ -148,23 +155,35 @@ void ABasePawn::SetIsPlayerAlive(bool setIsPlayerAlive)
 // Getter/Setters ---------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------
 // Jump 
-void ABasePawn::SetCanPawnJump(bool canPawnJump)
+void ABasePawn::SetCanPlayerJump(bool canPlayerJump)
 {
-	canJump = canPawnJump;
+	canJump = canPlayerJump;
 }
 
-bool ABasePawn::GetCanPawnJump()
+bool ABasePawn::GetCanPlayerJump()
 {
 	return canJump;
 }
 
 // Switch player
-void ABasePawn::SetCanPawnSwitch(bool canPawnSwitch)
+void ABasePawn::SetCanPlayerSwitch(bool canPlayerSwitch)
 {
-	canSwitch = canPawnSwitch;
+	canSwitch = canPlayerSwitch;
 }
 
-bool ABasePawn::GetCanPawnSwitch()
+bool ABasePawn::GetCanPlayerSwitch()
 {
 	return canSwitch;
 }
+
+// Move player
+void ABasePawn::SetCanPlayerMove(bool canPlayerMove)
+{
+	canMove = canPlayerMove;
+}
+
+bool ABasePawn::GetCanPlayerMove()
+{
+	return canMove;
+}
+// ------------------------------------------------------------------------------------------------------------------------------

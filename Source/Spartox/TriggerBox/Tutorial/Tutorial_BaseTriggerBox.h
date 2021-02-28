@@ -11,9 +11,13 @@ class SPARTOX_API ATutorial_BaseTriggerBox : public ATriggerBox
 {
 	GENERATED_BODY()
 
+public:
+	UPROPERTY(Category = "Interaction", EditDefaultsOnly, BlueprintReadWrite)
+		bool canMultipleOverlaps{ false };
+
 protected:
 	// Variables
-	bool bOverlapped{ false };
+	bool bOverlapped{ canMultipleOverlaps };
 
 	// Functions
 	virtual void BeginPlay();

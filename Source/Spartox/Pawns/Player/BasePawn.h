@@ -19,12 +19,16 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInput) override;
 
 	UFUNCTION(BlueprintCallable)
-		void SetCanPawnJump(bool canPawnJump);
-	bool GetCanPawnJump();
+		void SetCanPlayerJump(bool canPlayerJump);
+	bool GetCanPlayerJump();
 
 	UFUNCTION(BlueprintCallable)
-		void SetCanPawnSwitch(bool canPawnSwitch);
-	bool GetCanPawnSwitch();
+		void SetCanPlayerSwitch(bool canPlayerSwitch);
+	bool GetCanPlayerSwitch();
+
+	UFUNCTION(BlueprintCallable)
+		void SetCanPlayerMove(bool canPlayerMove);
+	bool GetCanPlayerMove();
 
 protected:
 	// Variables
@@ -54,15 +58,18 @@ private:
 	// Variables
 	UPROPERTY(Category = "Player Jump", BlueprintReadWrite, EditDefaultsOnly, META = (AllowPrivateAccess = "true"))
 		bool canJump{ true };
-	UPROPERTY(Category = "Player Movement", BlueprintReadWrite, EditAnywhere, META = (AllowPrivateAccess = "true"))
-		float fMovementSpeed{ 800.f };
 	UPROPERTY(Category = "Player Jump", BlueprintReadWrite, EditAnywhere, META = (AllowPrivateAccess = "true"))
-		float fJumpForce{ 600.f };
+		float fJumpForce{ 500.f };
+	UPROPERTY(Category = "Player Movement", BlueprintReadWrite, EditDefaultsOnly, META = (AllowPrivateAccess = "true"))
+		bool canMove{ true };
+	UPROPERTY(Category = "Player Movement", BlueprintReadWrite, EditAnywhere, META = (AllowPrivateAccess = "true"))
+		float fMovementSpeed{ 600.f };
+	UPROPERTY(Category = "Player Switch", BlueprintReadWrite, EditDefaultsOnly, META = (AllowPrivateAccess = "true"))
+		bool canSwitch{ true };
 
 	class ASpartox_GameModeBase* GameModeRef;
 	float X_CollisionRange{ 5.f };
 	float Z_CollisionRange{ 2.f };
-	bool canSwitch{ true };
 
 	// Functions
 	void MoveRight(float ScaleValue);
