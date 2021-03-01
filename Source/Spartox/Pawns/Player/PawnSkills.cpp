@@ -10,14 +10,3 @@ UPawnSkills::UPawnSkills()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 }
-
-void UPawnSkills::RedPawnSpecialSkill(AActor* RedActor)
-{
-	if (RedActor != nullptr)
-		RedActor->AddActorWorldOffset(FVector(RedActor->GetActorLocation() + 5));
-}
-
-void UPawnSkills::BluePawnSpecialSkill(AActor* BlueActor)
-{
-
-}

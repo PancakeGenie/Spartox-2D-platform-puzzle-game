@@ -66,10 +66,8 @@ void ABasePawn::MoveRight(float ScaleValue)
 	if (ScaleValue != 0.f && canMove == true && isPlayerAlive == true)
 	{
 		if (MoveCollision(ScaleValue, -MeshCollision_COL->GetScaledBoxExtent().Z) == true || MoveCollision(ScaleValue, MeshCollision_COL->GetScaledBoxExtent().Z) == true)
-		{
-			//UE_LOG(LogTemp, Warning, TEXT("Collision while moving!"));
 			return;
-		}
+
 
 		// Movement is based on frame rate (DeltaSeconds), scale value (Movement direction) and MovementSpeed (Arbitrary value)
 		const FVector vCalcMovement{ GetWorld()->GetDeltaSeconds() * ScaleValue * fMovementSpeed, 0.f, 0.f };
@@ -88,12 +86,10 @@ bool ABasePawn::MoveCollision(float& MovementDirection, float LineTrace_ZPositio
 	FCollisionQueryParams TraceParams;
 
 	// Direction and length of end vector
-	if (MovementDirection > 0)
-		EndLocation = FVector(StartLocation.X + MeshCollision_COL->GetScaledBoxExtent().X + X_CollisionRange, 0.f, StartLocation.Z);
-	else
-		EndLocation = FVector(StartLocation.X - MeshCollision_COL->GetScaledBoxExtent().X - X_CollisionRange, 0.f, StartLocation.Z);
+	MovementDirection > 0 ? EndLocation = FVector(StartLocation.X + MeshCollision_COL->GetScaledBoxExtent().X + X_CollisionRange, 0.f, StartLocation.Z)
+						  : EndLocation = FVector(StartLocation.X - MeshCollision_COL->GetScaledBoxExtent().X - X_CollisionRange, 0.f, StartLocation.Z);
 
-	// Ignore self actor, look Hit event only for other player
+	// Ignore self actor, look Hit result only for other player
 	TraceParams.AddIgnoredActor(this);
 
 	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 2.f);
@@ -106,10 +102,7 @@ void ABasePawn::Jump()
 	if (isPlayerAlive == true && canJump == true)
 	{
 		if (CanJump(-MeshCollision_COL->GetScaledBoxExtent().Z) == false && CanJump(MeshCollision_COL->GetScaledBoxExtent().Z) == false)
-		{
-			//UE_LOG(LogTemp, Warning, TEXT("No collision, player is in air"));
 			return;
-		}
 
 		// Jump is based on fJumpForce
 		const FVector vCalcJump{ 0.f, 0.f, fJumpForce };
@@ -127,7 +120,7 @@ bool ABasePawn::CanJump(float LineTrace_XPosition)
 	FVector EndLocation{StartLocation.X, 0.f, StartLocation.Z - MeshCollision_COL->GetScaledBoxExtent().Z - Z_CollisionRange };
 	FCollisionQueryParams TraceParams;
 
-	// Ignore self actor, look Hit event only for other player
+	// Ignore self actor, look Hit result only for other player
 	TraceParams.AddIgnoredActor(this);
 
 	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, false, 2.f);
@@ -140,7 +133,7 @@ bool ABasePawn::CanJump(float LineTrace_XPosition)
 // ------------------------------------------------------------------------------------------------------------------------------
 void ABasePawn::SwitchPlayer()
 {
-	if (isPlayerAlive == true)
+	if (isPlayerAlive == true && canSwitch == true)
 		GameModeRef->SwitchPlayer(ABasePawn::isRedPawn);
 }
 // ------------------------------------------------------------------------------------------------------------------------------

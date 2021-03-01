@@ -15,10 +15,4 @@ class SPARTOX_API UPawnSkills : public UActorComponent
 public:
 	// Constructor
 	UPawnSkills();
-
-	// Functions
-	UFUNCTION(BlueprintCallable, Category = "Actions")
-		void RedPawnSpecialSkill(AActor* RedActor);
-	UFUNCTION(BlueprintCallable, Category = "Actions")
-		void BluePawnSpecialSkill(AActor* BlueActor);
 };

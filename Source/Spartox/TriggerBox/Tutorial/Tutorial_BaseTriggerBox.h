@@ -12,21 +12,30 @@ class SPARTOX_API ATutorial_BaseTriggerBox : public ATriggerBox
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(Category = "Interaction", EditDefaultsOnly, BlueprintReadWrite)
-		bool canMultipleOverlaps{ false };
+	// Constructor
+	ATutorial_BaseTriggerBox();
 
 protected:
-	// Variables
-	bool bOverlapped{ canMultipleOverlaps };
-
 	// Functions
 	virtual void BeginPlay();
 
 	UFUNCTION(BlueprintImplementableEvent)
-		void OnTrigger();
+		void OnTriggerOverlap();
+	UFUNCTION(BlueprintImplementableEvent)
+		void OnTriggerEndOverlap();
 
 private:
+	// Variables
+	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere, META = (AllowPrivateAccess = "true"))
+		UStaticMeshComponent* BaseMesh_SM;
+	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere, META = (AllowPrivateAccess = "true"))
+		class UWidgetComponent* TextWidget_WGT;
+	UPROPERTY(Category = "Interaction", EditDefaultsOnly, BlueprintReadWrite, META = (AllowPrivateAccess = "true"));
+		bool bMultipleOverlaps{ true };
+
 	// Functions
 	UFUNCTION()
-		void OnOverlap(AActor* OtherActor, AActor* PlayerActor);
+		void OnOverlapBegin(AActor* OtherActor, AActor* PlayerActor);
+	UFUNCTION()
+		void OnOverlapEnd(AActor* OtherActor, AActor* PlayerActor);
 };
