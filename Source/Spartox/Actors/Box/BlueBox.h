@@ -12,6 +12,7 @@ class SPARTOX_API ABlueBox : public ABaseBox
 	GENERATED_BODY()
 
 protected:
+	// Functions
 	virtual void DestroyActor(AActor* OtherActor) override;
 
 };

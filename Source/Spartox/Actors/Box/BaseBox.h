@@ -16,10 +16,6 @@ public:
 	ABaseBox();
 
 protected:
-	// Variables
-	class AActor* RedPawnActorRef;
-	class AActor* BluePawnActorRef;
-
 	// Functions
 	virtual void BeginPlay() override;
 	virtual void DestroyActor(AActor* OtherActor);

@@ -17,41 +17,46 @@ bool ABasePawn::isRedPawn{ false };
 ABasePawn::ABasePawn()
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
-	// Create objects and link them
+	// Create all objects and link them
+	// ---------------------------------
+	// Responsible for collision detection
 	MeshCollision_COL = CreateDefaultSubobject<UBoxComponent>(TEXT("Mesh Collision"));
 	RootComponent = MeshCollision_COL;
 
+	// Visible mesh to player
 	BaseMesh_SM = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Player Mesh"));
 	BaseMesh_SM->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 
+	// Responsible for interacting with other Actors in level
 	DestructableBoxCollision_COL = CreateDefaultSubobject<UBoxComponent>(TEXT("Obstacle Collision"));
 	DestructableBoxCollision_COL->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 
+	// Responsible for determining Camera position and interaction
 	SpringArm_SA = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	SpringArm_SA->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
+	// Responsible for seeing the game. It's a camera...
 	PlayerCamera_CAM = CreateDefaultSubobject<UCameraComponent>(TEXT("Player Camera"));
 	PlayerCamera_CAM->AttachToComponent(SpringArm_SA, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
+	// Responsible for skills in the game
 	PawnSkillsRef = CreateDefaultSubobject<UPawnSkills>(TEXT("Player Skills"));
 }
 
 void ABasePawn::BeginPlay()
 {
-	// Assign game mode ref to GameModeRef handle
 	GameModeRef = Cast<ASpartox_GameModeBase>(UGameplayStatics::GetGameMode(this));
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------
-// Player movement and jump -----------------------------------------------------------------------------------------------------
+// Player input -----------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------
 void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInput)
 {
 	Super::SetupPlayerInputComponent(PlayerInput);
 
-	// Link player movement, jump and switch
 	PlayerInput->BindAxis("MoveRight", this, &ABasePawn::MoveRight);
 	PlayerInput->BindAction("Jump", EInputEvent::IE_Pressed, this, &ABasePawn::Jump);
 	PlayerInput->BindAction("Switch", EInputEvent::IE_Pressed, this, &ABasePawn::SwitchPlayer);
@@ -65,14 +70,11 @@ void ABasePawn::MoveRight(float ScaleValue)
 {
 	if (ScaleValue != 0.f && canMove == true && isPlayerAlive == true)
 	{
+		// Checker, responsible for determining if player can move. 
 		if (MoveCollision(ScaleValue, -MeshCollision_COL->GetScaledBoxExtent().Z) == true || MoveCollision(ScaleValue, MeshCollision_COL->GetScaledBoxExtent().Z) == true)
 			return;
 
-
-		// Movement is based on frame rate (DeltaSeconds), scale value (Movement direction) and MovementSpeed (Arbitrary value)
 		const FVector vCalcMovement{ GetWorld()->GetDeltaSeconds() * ScaleValue * fMovementSpeed, 0.f, 0.f };
-
-		// Move player
 		AddActorWorldOffset(vCalcMovement);
 	}
 }
@@ -85,13 +87,13 @@ bool ABasePawn::MoveCollision(float& MovementDirection, float LineTrace_ZPositio
 	FVector EndLocation;
 	FCollisionQueryParams TraceParams;
 
-	// Direction and length of end vector
+	// End length of vector depends on MovementDirection vector (basically if player is moving right, EndLocation should be right of player)
 	MovementDirection > 0 ? EndLocation = FVector(StartLocation.X + MeshCollision_COL->GetScaledBoxExtent().X + X_CollisionRange, 0.f, StartLocation.Z)
 						  : EndLocation = FVector(StartLocation.X - MeshCollision_COL->GetScaledBoxExtent().X - X_CollisionRange, 0.f, StartLocation.Z);
 
-	// Ignore self actor, look Hit result only for other player
 	TraceParams.AddIgnoredActor(this);
 
+	// For testing purposes only.
 	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 2.f);
 
 	return GetWorld()->LineTraceSingleByChannel(HitCollision, StartLocation, EndLocation, ECC_Pawn, TraceParams);
@@ -100,14 +102,12 @@ bool ABasePawn::MoveCollision(float& MovementDirection, float LineTrace_ZPositio
 void ABasePawn::Jump()
 {
 	if (isPlayerAlive == true && canJump == true)
-	{
+	{	
+		// Checker, responsible for determining if player can jump. 
 		if (CanJump(-MeshCollision_COL->GetScaledBoxExtent().Z) == false && CanJump(MeshCollision_COL->GetScaledBoxExtent().Z) == false)
 			return;
 
-		// Jump is based on fJumpForce
 		const FVector vCalcJump{ 0.f, 0.f, fJumpForce };
-
-		// Jump, ignore player mass
 		MeshCollision_COL->AddImpulse(vCalcJump, NAME_None, true);
 	}
 }
@@ -120,10 +120,11 @@ bool ABasePawn::CanJump(float LineTrace_XPosition)
 	FVector EndLocation{StartLocation.X, 0.f, StartLocation.Z - MeshCollision_COL->GetScaledBoxExtent().Z - Z_CollisionRange };
 	FCollisionQueryParams TraceParams;
 
-	// Ignore self actor, look Hit result only for other player
 	TraceParams.AddIgnoredActor(this);
 
+	// For testing purposes only.
 	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, false, 2.f);
+
 	return GetWorld()->LineTraceSingleByChannel(HitCollision, StartLocation, EndLocation, ECC_Pawn, TraceParams);
 }
 // ------------------------------------------------------------------------------------------------------------------------------

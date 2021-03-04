@@ -10,4 +10,19 @@ UCLASS()
 class SPARTOX_API ABluePawn : public ABasePawn
 {
 	GENERATED_BODY()
+
+public:	
+	// Variables
+	bool isBlueFirstTime{ false };
+
+	// Constructor
+	ABluePawn();
+
+	// Functions
+	virtual void Tick(float DeltaTime);
+
+private:
+	// Functions
+	void BlueRuntimeConfig();
+
 };

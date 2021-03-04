@@ -9,7 +9,7 @@ void ASpartox_GameMode_Tutorial::BeginPlay()
 	// Run GameModeBase begin play
 	Super::BeginPlay();
 
-	// Set specific default values for tutorial
+	// Player can't move, jump or switch on start in tutorial level
 	BluePawn->SetCanPlayerJump(false);
 	BluePawn->SetCanPlayerSwitch(false);
 	BluePawn->SetCanPlayerMove(false);

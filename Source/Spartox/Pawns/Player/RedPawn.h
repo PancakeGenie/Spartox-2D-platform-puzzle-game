@@ -10,4 +10,18 @@ UCLASS()
 class SPARTOX_API ARedPawn : public ABasePawn
 {
 	GENERATED_BODY()
+
+public:
+	// Variables
+	bool isRedFirstTime{ false };
+
+	// Constructor
+	ARedPawn();
+
+	// Functions
+	virtual void Tick(float DeltaTime) override;
+
+private:
+	// Functions
+	void RedRuntimeConfig();
 };

@@ -12,9 +12,11 @@ class SPARTOX_API ASpartox_GameMode_Tutorial : public ASpartox_GameModeBase
 	GENERATED_BODY()
 	
 public:
+	// Functions
 	virtual void SwitchPlayer(bool& isRedPawn) override;
 
 protected:
+	// Functions
 	virtual void BeginPlay() override;
 
 private:

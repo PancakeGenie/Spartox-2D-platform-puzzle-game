@@ -12,10 +12,13 @@ ABaseBox::ABaseBox()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	// Create objects and link them
+	// Create all objects and link them
+	// ---------------------------------
+	// Responsible for collision detection
 	BoxCollision_COL = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collision"));
 	RootComponent = BoxCollision_COL;
 
+	// Visible mesh to player
 	BoxMesh_SM = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Box Mesh"));
 	BoxMesh_SM->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 }
@@ -25,14 +28,13 @@ void ABaseBox::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Cast Red and Blue Player
-	RedPawnActorRef = UGameplayStatics::GetActorOfClass(GetWorld(), ARedPawn::StaticClass());
-	BluePawnActorRef = UGameplayStatics::GetActorOfClass(GetWorld(), ABluePawn::StaticClass());
-
-	// Dynamic (OnHit)
+	// Dynamic (OnHit) delegate
 	BoxCollision_COL->OnComponentBeginOverlap.AddDynamic(this, &ABaseBox::OnOverlap);
 }
 
+// ------------------------------------------------------------------------------------------------------------------------------
+// Actor interaction on hit -----------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------
 void ABaseBox::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool FromSweep, const FHitResult& Hit)
 {
 	DestroyActor(OtherActor);
@@ -43,4 +45,4 @@ void ABaseBox::DestroyActor(AActor* OtherActor)
 	if (OtherActor == nullptr)
 		UE_LOG(LogTemp, Error, TEXT("Error, Actor doesn't exist!"));
 }
-
+// ------------------------------------------------------------------------------------------------------------------------------

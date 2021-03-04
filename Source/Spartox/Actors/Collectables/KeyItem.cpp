@@ -22,7 +22,7 @@ void AKeyItem::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Dynamic (OnHit)
+	// Dynamic (OnHit) delegate
 	KeyCollision_COL->OnComponentBeginOverlap.AddDynamic(this, &AKeyItem::OnOverlap);
 }
 
@@ -37,11 +37,12 @@ void AKeyItem::Tick(float DeltaTime)
 void AKeyItem::RotateKey()
 {
 	FRotator rSetKeyRotation{ KeyMesh_SM->GetComponentRotation().Pitch, KeyMesh_SM->GetComponentRotation().Yaw - fRotationSpeed, KeyMesh_SM->GetComponentRotation().Roll };
-
-	// Rotate the key by fixed value
 	KeyMesh_SM->SetWorldRotation(rSetKeyRotation);
 }
 
+// ------------------------------------------------------------------------------------------------------------------------------
+// Trigger on overlap functions -------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------
 void AKeyItem::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool FromSweep, const FHitResult& Hit)
 {
 	AActor* PlayerRef = UGameplayStatics::GetPlayerPawn(this, 0);
@@ -50,3 +51,4 @@ void AKeyItem::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Other
 	if (OtherActor == PlayerRef)
 		Destroy();
 }
+// ------------------------------------------------------------------------------------------------------------------------------
