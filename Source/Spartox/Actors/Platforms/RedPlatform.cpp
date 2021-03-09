@@ -3,6 +3,14 @@
 #include "RedPlatform.h"
 #include "../../Pawns/Player/RedPawn.h"
 
+ARedPlatform::ARedPlatform()
+{
+	// Cast blueprint (reflection)
+	static ConstructorHelpers::FObjectFinder<UBlueprint> RedPawn_BP(TEXT("Blueprint'/Game/Blueprints/Pawns/Player/RedPawn_BP.RedPawn_BP'"));
+	if (RedPawn_BP.Object != nullptr)
+		RedPlayer = (UClass*)RedPawn_BP.Object->GeneratedClass;
+}
+
 void ARedPlatform::BeginPlay()
 {
 	SpawnRedPlayer();
@@ -14,5 +22,7 @@ void ARedPlatform::SpawnRedPlayer()
 	FRotator SpawnRotation{ 0.f, 0.f, 0.f };
 	FActorSpawnParameters SpawnInfo;
 
-	GetWorld()->SpawnActor<ARedPawn>(SpawnLocation, SpawnRotation, SpawnInfo);
+	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	GetWorld()->SpawnActor<ARedPawn>(RedPlayer, SpawnLocation, SpawnRotation, SpawnInfo);
 }

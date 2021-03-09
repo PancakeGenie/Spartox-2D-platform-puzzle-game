@@ -10,14 +10,18 @@ UCLASS()
 class SPARTOX_API ABluePlatform : public ABasePlatform
 {
 	GENERATED_BODY()
-	
+
+public:
+	ABluePlatform();
+
 protected:
 	// Functions
 	virtual void BeginPlay() override;
 
 private:
 	// Variables
-	float SpawnDistance{ 300.f };
+	float SpawnDistance{ 150.f };
+	TSubclassOf<class ABluePawn> BluePlayer;
 	
 	// Functions
 	void SpawnBluePlayer();

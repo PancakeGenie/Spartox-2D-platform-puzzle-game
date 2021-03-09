@@ -13,7 +13,11 @@ class SPARTOX_API ASpartox_GameModeBase : public AGameModeBase
 
 public:
 	// Functions
-	virtual void SwitchPlayer(bool& isRedPawn);
+	void SwitchPlayer(bool& isRedPawn);
+	void NextLevel();
+
+	UFUNCTION(BlueprintCallable)
+		void ResetCurrentLevel();
 
 protected:
 	// Variables/Handles
@@ -25,7 +29,13 @@ protected:
 	virtual void BeginPlay();
 
 private:
+	// Variables
+	TArray<FName> LevelList;
+	int32 CurrentLevel;
+
 	// Functions
-	void HandlePlayerStart();
+	void GameStartConfig();
 	void InitialPossession();
+	TArray<FName> GetAllLevelNames();
+	const int32 GetCurrentLevel(const TArray<FName>& GameLevels);
 };

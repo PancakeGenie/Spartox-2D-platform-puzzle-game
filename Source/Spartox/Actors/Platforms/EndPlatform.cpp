@@ -3,8 +3,8 @@
 #include "EndPlatform.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "../Collectables/KeyItem.h"
+#include "../../GameMode/Spartox_GameModeBase.h"
 
 AEndPlatform::AEndPlatform()
 {
@@ -17,6 +17,8 @@ AEndPlatform::AEndPlatform()
 
 void AEndPlatform::BeginPlay()
 {
+	GameModeRef = Cast<ASpartox_GameModeBase>(UGameplayStatics::GetGameMode(this));
+
 	// Dynamic (OnOverlap) delegate
 	EndLevelCollision_COL->OnComponentBeginOverlap.AddDynamic(this, &AEndPlatform::OnOverlap);
 }
@@ -33,8 +35,8 @@ void AEndPlatform::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* O
 		AActor* Keys = UGameplayStatics::GetActorOfClass(GetWorld(), AKeyItem::StaticClass());
 
 		// Check if key is picked up, if it is, go to the next level (this will be completely done tomorrow)
-		if (Keys == nullptr) 
-			UGameplayStatics::OpenLevel(GetWorld(), TEXT("/Game/Levels/Level_01"), TRAVEL_Absolute);	
+		if (Keys == nullptr)
+			GameModeRef->NextLevel();
 	}
 }
 // ------------------------------------------------------------------------------------------------------------------------------

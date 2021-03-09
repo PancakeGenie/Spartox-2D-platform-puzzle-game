@@ -4,20 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Engine/TriggerBox.h"
-#include "Tutorial_BaseTriggerBox.generated.h"
+#include "BaseTriggerBox.generated.h"
 
 UCLASS()
-class SPARTOX_API ATutorial_BaseTriggerBox : public ATriggerBox
+class SPARTOX_API ABaseTriggerBox : public ATriggerBox
 {
 	GENERATED_BODY()
 
-public:
-	// Constructor
-	ATutorial_BaseTriggerBox();
-
 protected:
 	// Functions
-	virtual void BeginPlay();
+	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void OnTriggerOverlap();
@@ -26,12 +22,8 @@ protected:
 
 private:
 	// Variables
-	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere, META = (AllowPrivateAccess = "true"))
-		UStaticMeshComponent* BaseMesh_SM;
-	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere, META = (AllowPrivateAccess = "true"))
-		class UWidgetComponent* TextWidget_WGT;
 	UPROPERTY(Category = "Interaction", EditDefaultsOnly, BlueprintReadWrite, META = (AllowPrivateAccess = "true"));
-		bool bMultipleOverlaps{ true };
+	bool bMultipleOverlaps{ true };
 
 	// Functions
 	UFUNCTION()

@@ -23,6 +23,8 @@ private:
 	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere, META = (AllowPrivateAccess = "true"))
 		class UBoxComponent* EndLevelCollision_COL;
 
+	class ASpartox_GameModeBase* GameModeRef;
+
 	// Functions
 	UFUNCTION()
 		void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool FromSweep, const FHitResult& Hit);

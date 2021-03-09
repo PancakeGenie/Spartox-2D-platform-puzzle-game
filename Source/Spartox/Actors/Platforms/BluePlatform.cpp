@@ -3,6 +3,14 @@
 #include "BluePlatform.h"
 #include "../../Pawns/Player/BluePawn.h"
 
+ABluePlatform::ABluePlatform()
+{
+	// Cast blueprint (reflection)
+	static ConstructorHelpers::FObjectFinder<UBlueprint> BluePawn_BP(TEXT("Blueprint'/Game/Blueprints/Pawns/Player/BluePawn_BP.BluePawn_BP'"));
+	if (BluePawn_BP.Object != nullptr)
+		BluePlayer = (UClass*)BluePawn_BP.Object->GeneratedClass;
+}
+
 void ABluePlatform::BeginPlay()
 {
 	SpawnBluePlayer();
@@ -14,5 +22,7 @@ void ABluePlatform::SpawnBluePlayer()
 	FRotator SpawnRotation{ 0.f, 0.f, 0.f };
 	FActorSpawnParameters SpawnInfo;
 
-	GetWorld()->SpawnActor<ABluePawn>(SpawnLocation, SpawnRotation, SpawnInfo);
+	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	GetWorld()->SpawnActor<ABluePawn>(BluePlayer, SpawnLocation, SpawnRotation, SpawnInfo);
 }

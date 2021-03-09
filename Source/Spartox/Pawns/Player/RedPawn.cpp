@@ -22,7 +22,7 @@ void ARedPawn::RedRuntimeConfig()
 	// If player is active, do this block
 	if (isRedFirstTime == false && isRedPawn == true)
 	{
-		MeshCollision_COL->SetSimulatePhysics(true);
+		//MeshCollision_COL->SetSimulatePhysics(true);
 
 		isRedFirstTime = true;
 	}
@@ -30,7 +30,7 @@ void ARedPawn::RedRuntimeConfig()
 	// If player is inactive, do this block
 	if (isRedFirstTime == true && isRedPawn == false)
 	{
-		MeshCollision_COL->SetSimulatePhysics(false);
+		//MeshCollision_COL->SetSimulatePhysics(false);
 
 		isRedFirstTime = false;
 	}

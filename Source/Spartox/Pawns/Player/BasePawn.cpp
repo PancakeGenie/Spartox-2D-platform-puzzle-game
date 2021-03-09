@@ -60,6 +60,7 @@ void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInput)
 	PlayerInput->BindAxis("MoveRight", this, &ABasePawn::MoveRight);
 	PlayerInput->BindAction("Jump", EInputEvent::IE_Pressed, this, &ABasePawn::Jump);
 	PlayerInput->BindAction("Switch", EInputEvent::IE_Pressed, this, &ABasePawn::SwitchPlayer);
+	PlayerInput->BindAction("Reset", EInputEvent::IE_Pressed, this, &ABasePawn::Reset);
 }
 // ------------------------------------------------------------------------------------------------------------------------------
 
@@ -130,12 +131,17 @@ bool ABasePawn::CanJump(float LineTrace_XPosition)
 // ------------------------------------------------------------------------------------------------------------------------------
 
 // ------------------------------------------------------------------------------------------------------------------------------
-// Player switch ----------------------------------------------------------------------------------------------------------------
+// Player switch and reset ------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------
 void ABasePawn::SwitchPlayer()
 {
 	if (isPlayerAlive == true && canSwitch == true)
 		GameModeRef->SwitchPlayer(ABasePawn::isRedPawn);
+}
+
+void ABasePawn::Reset()
+{
+	GameModeRef->ResetCurrentLevel();
 }
 // ------------------------------------------------------------------------------------------------------------------------------
 
@@ -148,6 +154,17 @@ void ABasePawn::SetIsPlayerAlive(bool setIsPlayerAlive)
 // ------------------------------------------------------------------------------------------------------------------------------
 // Getter/Setters ---------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------
+// Move player
+void ABasePawn::SetCanPlayerMove(bool canPlayerMove)
+{
+	canMove = canPlayerMove;
+}
+
+bool ABasePawn::GetCanPlayerMove()
+{
+	return canMove;
+}
+
 // Jump 
 void ABasePawn::SetCanPlayerJump(bool canPlayerJump)
 {
@@ -170,14 +187,9 @@ bool ABasePawn::GetCanPlayerSwitch()
 	return canSwitch;
 }
 
-// Move player
-void ABasePawn::SetCanPlayerMove(bool canPlayerMove)
+// Default player
+void ABasePawn::SetDefaltPlayer(bool isCurrentlyRedPlayer)
 {
-	canMove = canPlayerMove;
-}
-
-bool ABasePawn::GetCanPlayerMove()
-{
-	return canMove;
+	ABasePawn::isRedPawn = isCurrentlyRedPlayer;
 }
 // ------------------------------------------------------------------------------------------------------------------------------

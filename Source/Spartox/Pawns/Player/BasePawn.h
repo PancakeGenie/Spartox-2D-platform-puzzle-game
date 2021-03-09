@@ -30,6 +30,8 @@ public:
 		void SetCanPlayerMove(bool canPlayerMove);
 	bool GetCanPlayerMove();
 
+	void SetDefaltPlayer(bool isCurrentlyRedPlayer = false);
+
 protected:
 	// Variables
 	bool isPlayerAlive{ true };
@@ -51,7 +53,6 @@ protected:
 
 	// Functions
 	virtual void BeginPlay();
-	virtual void SetIsPlayerAlive(bool setIsPlayerAlive);
 	virtual void SwitchPlayer();
 
 private:
@@ -76,4 +77,5 @@ private:
 	void Jump();
 	bool MoveCollision(float& MovementDirection, float LineTrace_ZPosition);
 	bool CanJump(float LineTrace_XPosition);
+	void Reset();
 };
