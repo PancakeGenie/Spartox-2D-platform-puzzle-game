@@ -25,6 +25,9 @@ private:
 	UPROPERTY(Category = "Interaction", EditDefaultsOnly, BlueprintReadWrite, META = (AllowPrivateAccess = "true"));
 	bool bMultipleOverlaps{ true };
 
+	class ARedPawn* RedPawn;
+	class ABluePawn* BluePawn;
+
 	// Functions
 	UFUNCTION()
 		void OnOverlapBegin(AActor* OtherActor, AActor* PlayerActor);

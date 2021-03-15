@@ -4,7 +4,7 @@
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Collectables/KeyItem.h"
-#include "../../GameMode/Spartox_GameModeBase.h"
+#include "../../GameMode/Spartox_GameModeGameplay.h"
 
 AEndPlatform::AEndPlatform()
 {
@@ -17,7 +17,7 @@ AEndPlatform::AEndPlatform()
 
 void AEndPlatform::BeginPlay()
 {
-	GameModeRef = Cast<ASpartox_GameModeBase>(UGameplayStatics::GetGameMode(this));
+	GameModeRef = Cast<ASpartox_GameModeGameplay>(UGameplayStatics::GetGameMode(this));
 
 	// Dynamic (OnOverlap) delegate
 	EndLevelCollision_COL->OnComponentBeginOverlap.AddDynamic(this, &AEndPlatform::OnOverlap);

@@ -5,7 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "../../GameMode/Spartox_GameModeBase.h"
+#include "../../GameMode/Spartox_GameModeGameplay.h"
 #include "Kismet/GameplayStatics.h"
 #include "PawnSkills.h"
 #include "DrawDebugHelpers.h"
@@ -47,7 +47,9 @@ ABasePawn::ABasePawn()
 
 void ABasePawn::BeginPlay()
 {
-	GameModeRef = Cast<ASpartox_GameModeBase>(UGameplayStatics::GetGameMode(this));
+	Super::BeginPlay();
+
+	GameModeRef = Cast<ASpartox_GameModeGameplay>(UGameplayStatics::GetGameMode(this));
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------
@@ -105,10 +107,14 @@ void ABasePawn::Jump()
 	if (isPlayerAlive == true && canJump == true)
 	{	
 		// Checker, responsible for determining if player can jump. 
-		if (CanJump(-MeshCollision_COL->GetScaledBoxExtent().Z) == false && CanJump(MeshCollision_COL->GetScaledBoxExtent().Z) == false)
+		if (CanJump(-MeshCollision_COL->GetScaledBoxExtent().Z) == false && 
+			CanJump(MeshCollision_COL->GetScaledBoxExtent().Z) == false && 
+			CanJump(0) == false)
 			return;
 
 		const FVector vCalcJump{ 0.f, 0.f, fJumpForce };
+
+		MeshCollision_COL->SetAllPhysicsLinearVelocity(FVector(0, 0, 0), false);
 		MeshCollision_COL->AddImpulse(vCalcJump, NAME_None, true);
 	}
 }
@@ -144,12 +150,6 @@ void ABasePawn::Reset()
 	GameModeRef->ResetCurrentLevel();
 }
 // ------------------------------------------------------------------------------------------------------------------------------
-
-void ABasePawn::SetIsPlayerAlive(bool setIsPlayerAlive)
-{
-	isPlayerAlive = setIsPlayerAlive;
-}
-
 
 // ------------------------------------------------------------------------------------------------------------------------------
 // Getter/Setters ---------------------------------------------------------------------------------------------------------------

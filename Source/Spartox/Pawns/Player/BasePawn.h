@@ -68,7 +68,7 @@ private:
 	UPROPERTY(Category = "Player Switch", BlueprintReadWrite, EditDefaultsOnly, META = (AllowPrivateAccess = "true"))
 		bool canSwitch{ true };
 
-	class ASpartox_GameModeBase* GameModeRef;
+	class ASpartox_GameModeGameplay* GameModeRef;
 	float X_CollisionRange{ 5.f };
 	float Z_CollisionRange{ 2.f };
 

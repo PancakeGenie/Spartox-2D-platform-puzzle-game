@@ -12,30 +12,18 @@ class SPARTOX_API ASpartox_GameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	// Functions
-	void SwitchPlayer(bool& isRedPawn);
-	void NextLevel();
+	// Constructor
+	ASpartox_GameModeBase();
 
+	// Functions
 	UFUNCTION(BlueprintCallable)
-		void ResetCurrentLevel();
+		void LoadGame();
 
 protected:
-	// Variables/Handles
-	class ARedPawn* RedPawn;
-	class ABluePawn* BluePawn;
-	APlayerController* PlayerControllerRef;
-
-	// Functions
-	virtual void BeginPlay();
-
-private:
 	// Variables
-	TArray<FName> LevelList;
-	int32 CurrentLevel;
+	class USpartox_SaveGame* SaveGameInstance;
 
 	// Functions
-	void GameStartConfig();
-	void InitialPossession();
-	TArray<FName> GetAllLevelNames();
-	const int32 GetCurrentLevel(const TArray<FName>& GameLevels);
+	virtual void SaveGame(FString CurrentLevelName);
+	
 };

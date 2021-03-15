@@ -23,7 +23,7 @@ private:
 	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere, META = (AllowPrivateAccess = "true"))
 		class UBoxComponent* EndLevelCollision_COL;
 
-	class ASpartox_GameModeBase* GameModeRef;
+	class ASpartox_GameModeGameplay* GameModeRef;
 
 	// Functions
 	UFUNCTION()
