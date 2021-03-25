@@ -51,6 +51,11 @@ protected:
 	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere)
 		class UPawnSkills* PawnSkillsRef;
 
+	UPROPERTY(Category = "HUD and UI", EditDefaultsOnly, BlueprintReadOnly)
+		TSubclassOf<class UToggleMenu> ToggleWidgetClass;
+	UPROPERTY(Category = "HUD and UI", EditDefaultsOnly, BlueprintReadOnly)
+		class UToggleMenu* ToggleWidgetRef;
+
 	// Functions
 	virtual void BeginPlay();
 	virtual void SwitchPlayer();
@@ -72,10 +77,15 @@ private:
 	float X_CollisionRange{ 5.f };
 	float Z_CollisionRange{ 2.f };
 
+	UPROPERTY(Category = "HUD and UI", BlueprintReadWrite, EditAnywhere, META = (AllowPrivateAccess = "true"))
+		bool IsToggleMenu{ false };
+
 	// Functions
 	void MoveRight(float ScaleValue);
 	void Jump();
 	bool MoveCollision(float& MovementDirection, float LineTrace_ZPosition);
 	bool CanJump(float LineTrace_XPosition);
 	void Reset();
+	void ToggleMenu();
+	void ToggleMenuInit();
 };

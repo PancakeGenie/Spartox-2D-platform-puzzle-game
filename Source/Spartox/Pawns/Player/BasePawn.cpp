@@ -9,6 +9,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "PawnSkills.h"
 #include "DrawDebugHelpers.h"
+#include "Blueprint/UserWidget.h"
+#include "../../Widgets/ToggleMenu.h"
 
 // Static variable
 bool ABasePawn::isRedPawn{ false };
@@ -43,6 +45,11 @@ ABasePawn::ABasePawn()
 
 	// Responsible for skills in the game
 	PawnSkillsRef = CreateDefaultSubobject<UPawnSkills>(TEXT("Player Skills"));
+
+	// Cast widget blueprint (reflection)
+	static ConstructorHelpers::FObjectFinder<UBlueprint> ToggleMenu_BP(TEXT("WidgetBlueprint'/Game/Blueprints/Widgets/Game/ToggleMenu_WBP.ToggleMenu_WBP'"));
+	if (ToggleMenu_BP.Object != nullptr)
+		ToggleWidgetClass = (UClass*)ToggleMenu_BP.Object->GeneratedClass;
 }
 
 void ABasePawn::BeginPlay()
@@ -50,6 +57,8 @@ void ABasePawn::BeginPlay()
 	Super::BeginPlay();
 
 	GameModeRef = Cast<ASpartox_GameModeGameplay>(UGameplayStatics::GetGameMode(this));
+
+	ToggleMenuInit();
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------
@@ -63,6 +72,7 @@ void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInput)
 	PlayerInput->BindAction("Jump", EInputEvent::IE_Pressed, this, &ABasePawn::Jump);
 	PlayerInput->BindAction("Switch", EInputEvent::IE_Pressed, this, &ABasePawn::SwitchPlayer);
 	PlayerInput->BindAction("Reset", EInputEvent::IE_Pressed, this, &ABasePawn::Reset);
+	PlayerInput->BindAction("Menu", EInputEvent::IE_Pressed, this, &ABasePawn::ToggleMenu);
 }
 // ------------------------------------------------------------------------------------------------------------------------------
 
@@ -150,6 +160,31 @@ void ABasePawn::Reset()
 	GameModeRef->ResetCurrentLevel();
 }
 // ------------------------------------------------------------------------------------------------------------------------------
+
+// ------------------------------------------------------------------------------------------------------------------------------
+// Player game menu -------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------
+void ABasePawn::ToggleMenu()
+{
+	if (IsToggleMenu == false)
+	{
+		ToggleWidgetRef->SetVisibility(ESlateVisibility::Visible);
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeUIOnly());
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = true;
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		IsToggleMenu = true;
+	}
+}
+
+void ABasePawn::ToggleMenuInit()
+{
+	ToggleWidgetRef = CreateWidget<UToggleMenu>(GetWorld(), ToggleWidgetClass);
+	if (ToggleWidgetRef == nullptr)
+		return;
+
+	ToggleWidgetRef->AddToViewport();						  // Add widget to viewport
+	ToggleWidgetRef->SetVisibility(ESlateVisibility::Hidden); // Set it to hidden so its not open on spawn.
+}
 
 // ------------------------------------------------------------------------------------------------------------------------------
 // Getter/Setters ---------------------------------------------------------------------------------------------------------------

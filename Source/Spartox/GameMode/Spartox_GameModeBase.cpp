@@ -2,28 +2,21 @@
 
 #include "Spartox_GameModeBase.h"
 #include "Kismet/GameplayStatics.h"
-#include "../SaveGame/Spartox_SaveGame.h"
+#include "../Global_Log.h"
+#include "Spartox_GameInstance.h"
+
+DEFINE_LOG_CATEGORY_STATIC(GameModeBaseLog, All, All)
 
 ASpartox_GameModeBase::ASpartox_GameModeBase()
 {
 	DefaultPawnClass = nullptr;
-	SaveGameInstance = Cast<USpartox_SaveGame>(UGameplayStatics::CreateSaveGameObject(USpartox_SaveGame::StaticClass()));
 }
 
-void ASpartox_GameModeBase::SaveGame(FString CurrentLevelName)
+void ASpartox_GameModeBase::BeginPlay()
 {
-	SaveGameInstance = Cast<USpartox_SaveGame>(UGameplayStatics::CreateSaveGameObject(USpartox_SaveGame::StaticClass()));
+	Super::BeginPlay();
 
-	SaveGameInstance->CurrentLevel = FName(*CurrentLevelName);
-
-	UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("First Slot"), 0);
-
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *CurrentLevelName);
-}
-
-void ASpartox_GameModeBase::LoadGame()
-{
-	SaveGameInstance = Cast<USpartox_SaveGame>(UGameplayStatics::LoadGameFromSlot("First Slot", 0));
-
-	UGameplayStatics::OpenLevel(GetWorld(), SaveGameInstance->CurrentLevel);
+	GameInstanceRef = Cast<USpartox_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GameInstanceRef == nullptr)
+		LOG(GameModeBaseLog, "GameInstanceRef failed to cast!");
 }

@@ -12,6 +12,9 @@ class SPARTOX_API ASpartox_GameModeGameplay : public ASpartox_GameModeBase
 	GENERATED_BODY()
 	
 public:
+	// Constructor
+	ASpartox_GameModeGameplay();
+
 	// Functions
 	void SwitchPlayer(bool& isRedPawn);
 
@@ -28,12 +31,12 @@ protected:
 	APlayerController* PlayerControllerRef;
 
 	// Functions
-	virtual void BeginPlay();
+	virtual void BeginPlay() override;
 
 private:
 	// Variables
 	TArray<FName> LevelList;
-	int32 CurrentLevel{ 0 };
+	int32 CurrentLevelIndex{ 0 };
 
 	// Functions
 	void GameStartConfig();

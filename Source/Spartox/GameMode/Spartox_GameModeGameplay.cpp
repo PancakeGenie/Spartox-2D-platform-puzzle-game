@@ -4,18 +4,23 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Engine/ObjectLibrary.h"
-#include "../SaveGame/Spartox_SaveGame.h"
+#include "Spartox_GameInstance.h"
 #include "../Global_Log.h"
 #include "../Pawns/Player/BluePawn.h"
 #include "../Pawns/Player/RedPawn.h"
 
 DEFINE_LOG_CATEGORY_STATIC(GameModeLog, All, All)
 
+ASpartox_GameModeGameplay::ASpartox_GameModeGameplay()
+{
+	LevelList = GetAllLevelNames();				// Put in constructor
+}
+
 void ASpartox_GameModeGameplay::BeginPlay()
 {
-	GameStartConfig();
+	Super::BeginPlay();
 
-	SaveGame(LevelList[CurrentLevel].ToString());
+	GameStartConfig();
 }
 
 // Game starting state
@@ -27,8 +32,8 @@ void ASpartox_GameModeGameplay::GameStartConfig()
 	PlayerControllerRef = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 	BluePawn->SetDefaltPlayer();				// Resets the static value (isRedPawn)
-	LevelList = GetAllLevelNames();
-	CurrentLevel = GetCurrentLevel(LevelList);
+	//LevelList = GetAllLevelNames();				// Put in constructor
+	CurrentLevelIndex = GetCurrentLevel(LevelList);
 
 	// Possess, take ownership, of Blue player
 	InitialPossession();
@@ -103,8 +108,11 @@ const int32 ASpartox_GameModeGameplay::GetCurrentLevel(const TArray<FName>& Game
 // Switch to next level, if there is one
 void ASpartox_GameModeGameplay::NextLevel()
 {
-	if (CurrentLevel < LevelList.Num() - 1)
-		UGameplayStatics::OpenLevel(GetWorld(), LevelList[CurrentLevel + 1], TRAVEL_Absolute);
+	if (CurrentLevelIndex < LevelList.Num() - 1)
+	{
+		GameInstanceRef->SaveGame(LevelList[CurrentLevelIndex + 1].ToString());
+		UGameplayStatics::OpenLevel(GetWorld(), LevelList[CurrentLevelIndex + 1], TRAVEL_Absolute);
+	}
 	else
 		UGameplayStatics::OpenLevel(GetWorld(), "/Game/Levels/MainMenu/MainMenu", TRAVEL_Absolute);
 }
@@ -112,5 +120,5 @@ void ASpartox_GameModeGameplay::NextLevel()
 // Resets the current, triggered by overlapping the triggerbox (on level) or manually by player
 void ASpartox_GameModeGameplay::ResetCurrentLevel()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), LevelList[CurrentLevel], TRAVEL_Absolute);
+	UGameplayStatics::OpenLevel(GetWorld(), LevelList[CurrentLevelIndex], TRAVEL_Absolute);
 }

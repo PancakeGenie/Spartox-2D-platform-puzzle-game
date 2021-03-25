@@ -15,15 +15,11 @@ public:
 	// Constructor
 	ASpartox_GameModeBase();
 
-	// Functions
-	UFUNCTION(BlueprintCallable)
-		void LoadGame();
-
 protected:
 	// Variables
-	class USpartox_SaveGame* SaveGameInstance;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+		class USpartox_GameInstance* GameInstanceRef;
 
 	// Functions
-	virtual void SaveGame(FString CurrentLevelName);
-	
+	virtual void BeginPlay() override;
 };
