@@ -12,7 +12,7 @@ AEndPlatform::AEndPlatform()
 	// ---------------------------------
 	// Responsible for collision detection
 	EndLevelCollision_COL = CreateDefaultSubobject<UBoxComponent>(TEXT("End level Collision"));
-	EndLevelCollision_COL->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	EndLevelCollision_COL->SetupAttachment(RootComponent);
 }
 
 void AEndPlatform::BeginPlay()

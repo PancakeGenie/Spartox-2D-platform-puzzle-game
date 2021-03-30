@@ -20,6 +20,7 @@ void ASpartox_GameModeGameplay::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Cast objects, set level, etc.
 	GameStartConfig();
 }
 
@@ -31,8 +32,7 @@ void ASpartox_GameModeGameplay::GameStartConfig()
 	BluePawn = Cast<ABluePawn>(UGameplayStatics::GetActorOfClass(GetWorld(), ABluePawn::StaticClass()));
 	PlayerControllerRef = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
-	BluePawn->SetDefaltPlayer();				// Resets the static value (isRedPawn)
-	//LevelList = GetAllLevelNames();				// Put in constructor
+	BluePawn->SetDefaltPlayer();					// Resets the static value (isRedPawn)
 	CurrentLevelIndex = GetCurrentLevel(LevelList);
 
 	// Possess, take ownership, of Blue player
@@ -78,7 +78,7 @@ TArray<FName> ASpartox_GameModeGameplay::GetAllLevelNames()
 	ObjectLibrary->GetAssetDataList(MapData);
 
 	// Write all the levels in an array
-	for (int32 i = 0; i < MapData.Num(); ++i)
+	for (uint8 i = 0; i < MapData.Num(); ++i)
 	{
 		const FString CurrentLevelSName = "/Game/Levels/GameLevels/" + MapData[i].AssetName.ToString();
 		const FName CurrentLevelName = FName(*CurrentLevelSName);
@@ -110,7 +110,7 @@ void ASpartox_GameModeGameplay::NextLevel()
 {
 	if (CurrentLevelIndex < LevelList.Num() - 1)
 	{
-		GameInstanceRef->SaveGame(LevelList[CurrentLevelIndex + 1].ToString());
+		GameInstanceRef->SaveGame(GameInstanceRef->SaveGameName, GameInstanceRef->GameIndex, LevelList[CurrentLevelIndex + 1].ToString());
 		UGameplayStatics::OpenLevel(GetWorld(), LevelList[CurrentLevelIndex + 1], TRAVEL_Absolute);
 	}
 	else

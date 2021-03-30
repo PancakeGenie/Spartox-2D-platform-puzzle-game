@@ -17,5 +17,5 @@ ABasePlatform::ABasePlatform()
 
 	// Visible mesh to player
 	PlatformMesh_SM = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Box Mesh"));
-	PlatformMesh_SM->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	PlatformMesh_SM->SetupAttachment(RootComponent);
 }

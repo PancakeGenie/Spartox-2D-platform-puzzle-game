@@ -18,15 +18,15 @@ ABullet::ABullet()
 
 	// Responsible for collision detection (destroy self)
 	BulletDestroyCollision_COL = CreateDefaultSubobject<UBoxComponent>(TEXT("Bullet Destruction Collision"));
-	BulletDestroyCollision_COL->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	BulletDestroyCollision_COL->SetupAttachment(RootComponent);
 
 	// Responsible for collision detection (allow walking if red)
 	BulletWalkOnCollision_COL = CreateDefaultSubobject<UBoxComponent>(TEXT("Bullet Walk On Collision"));
-	BulletWalkOnCollision_COL->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	BulletWalkOnCollision_COL->SetupAttachment(RootComponent);
 
 	// Visible mesh to player
 	BulletMesh_SM = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bullet Mesh"));
-	BulletMesh_SM->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	BulletMesh_SM->SetupAttachment(RootComponent);
 
 	// Used for bullet movement
 	BulletMovement_CPT = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Bullet Movement"));

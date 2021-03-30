@@ -29,27 +29,27 @@ ABasePawn::ABasePawn()
 
 	// Visible mesh to player
 	BaseMesh_SM = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Player Mesh"));
-	BaseMesh_SM->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	BaseMesh_SM->SetupAttachment(RootComponent);
 
 	// Responsible for interacting with other Actors in level
 	DestructableBoxCollision_COL = CreateDefaultSubobject<UBoxComponent>(TEXT("Obstacle Collision"));
-	DestructableBoxCollision_COL->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	DestructableBoxCollision_COL->SetupAttachment(RootComponent);
 
 	// Responsible for determining Camera position and interaction
 	SpringArm_SA = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
-	SpringArm_SA->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	SpringArm_SA->SetupAttachment(RootComponent);
 
 	// Responsible for seeing the game. It's a camera...
 	PlayerCamera_CAM = CreateDefaultSubobject<UCameraComponent>(TEXT("Player Camera"));
-	PlayerCamera_CAM->AttachToComponent(SpringArm_SA, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	PlayerCamera_CAM->SetupAttachment(SpringArm_SA);
 
 	// Responsible for skills in the game
 	PawnSkillsRef = CreateDefaultSubobject<UPawnSkills>(TEXT("Player Skills"));
 
 	// Cast widget blueprint (reflection)
-	static ConstructorHelpers::FObjectFinder<UBlueprint> ToggleMenu_BP(TEXT("WidgetBlueprint'/Game/Blueprints/Widgets/Game/ToggleMenu_WBP.ToggleMenu_WBP'"));
+	static ConstructorHelpers::FObjectFinder<UClass> ToggleMenu_BP(TEXT("Class'/Game/Blueprints/Widgets/Game/ToggleMenu_WBP.ToggleMenu_WBP_C'"));
 	if (ToggleMenu_BP.Object != nullptr)
-		ToggleWidgetClass = (UClass*)ToggleMenu_BP.Object->GeneratedClass;
+		ToggleWidgetClass = ToggleMenu_BP.Object;
 }
 
 void ABasePawn::BeginPlay()

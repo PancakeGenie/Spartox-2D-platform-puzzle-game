@@ -24,19 +24,19 @@ AStaticTurret::AStaticTurret()
 
 	// Visible mesh to player
 	CannonBaseMesh_SM = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cannon Base Mesh"));
-	CannonBaseMesh_SM->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	CannonBaseMesh_SM->SetupAttachment(RootComponent);
 
 	CannonMesh_SM = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cannon Mesh"));
-	CannonMesh_SM->AttachToComponent(CannonBaseMesh_SM, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	CannonMesh_SM->SetupAttachment(CannonBaseMesh_SM);
 
 	// Used for bullet spawn location/rotation
 	BulletArrow_ARW = CreateDefaultSubobject<UArrowComponent>(TEXT("Bullet Arrow Spawn Location"));
-	BulletArrow_ARW->AttachToComponent(CannonMesh_SM, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	BulletArrow_ARW->SetupAttachment(CannonMesh_SM);
 
 	// Cast blueprint (reflection)
-	static ConstructorHelpers::FObjectFinder<UBlueprint> Bullet_BP(TEXT("Blueprint'/Game/Blueprints/AI/Bullet/Bullet_BP.Bullet_BP'"));
+	static ConstructorHelpers::FObjectFinder<UClass> Bullet_BP(TEXT("Class'/Game/Blueprints/AI/Bullet/Bullet_BP.Bullet_BP_C'"));
 	if (Bullet_BP.Object != nullptr)
-		Bullet = (UClass*)Bullet_BP.Object->GeneratedClass;
+		Bullet = Bullet_BP.Object;
 }
 
 // Called when the game starts or when spawned

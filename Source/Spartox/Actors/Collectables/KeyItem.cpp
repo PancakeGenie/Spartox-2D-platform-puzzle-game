@@ -15,7 +15,7 @@ AKeyItem::AKeyItem()
 	RootComponent = KeyCollision_COL;
 
 	KeyMesh_SM = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Key Mesh"));
-	KeyMesh_SM->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	KeyMesh_SM->SetupAttachment(RootComponent);
 }
 
 void AKeyItem::BeginPlay()

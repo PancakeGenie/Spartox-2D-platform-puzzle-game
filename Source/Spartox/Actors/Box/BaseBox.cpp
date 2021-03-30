@@ -20,7 +20,7 @@ ABaseBox::ABaseBox()
 
 	// Visible mesh to player
 	BoxMesh_SM = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Box Mesh"));
-	BoxMesh_SM->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	BoxMesh_SM->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned

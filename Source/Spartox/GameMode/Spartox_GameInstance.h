@@ -6,6 +6,8 @@
 #include "Engine/GameInstance.h"
 #include "Spartox_GameInstance.generated.h"
 
+#define int SAVE_NUM {3}
+
 UCLASS()
 class SPARTOX_API USpartox_GameInstance : public UGameInstance
 {
@@ -16,13 +18,26 @@ public:
 	UPROPERTY(Category = "Save Game", BlueprintReadOnly, VisibleAnywhere)
 		class USpartox_SaveGame* SaveGameInstance;
 	UPROPERTY(Category = "Save Game", BlueprintReadWrite, EditAnywhere)
-		FString SaveName;
+		TArray<FString>SaveGamesList;
 	UPROPERTY(Category = "Save Game", BlueprintReadWrite, EditAnywhere)
 		int32 GameIndex;
+	UPROPERTY(Category = "Save Game", BlueprintReadWrite, EditAnywhere)
+		FString SaveGameName;
+
+	// Constructor
+	USpartox_GameInstance();
 
 	// Functions
 	UFUNCTION(BlueprintCallable)
-		void SaveGame(FString CurrentLevelName);
+		void SaveGame(UPARAM(ref) const FString& SaveSlotName, UPARAM(ref) const int32& Index, FString CurrentLevelName = "Level_00");
 	UFUNCTION(BlueprintCallable)
-		void LoadGame(FString SaveSlotName);
+		void LoadGame(UPARAM(ref) const FString &SaveSlotName, UPARAM(ref) const int32& Index);
+
+	UFUNCTION(BlueprintCallable)
+		bool DoesSaveExist(UPARAM(ref) const TArray<FString> &getSaveGamesList);
+
+private:
+	// Functions
+	static TArray<FString> GetAllSaveGameSlotNames();
+
 };

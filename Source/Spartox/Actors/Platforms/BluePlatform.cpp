@@ -6,9 +6,9 @@
 ABluePlatform::ABluePlatform()
 {
 	// Cast blueprint (reflection)
-	static ConstructorHelpers::FObjectFinder<UBlueprint> BluePawn_BP(TEXT("Blueprint'/Game/Blueprints/Pawns/Player/BluePawn_BP.BluePawn_BP'"));
+	static ConstructorHelpers::FObjectFinder<UClass> BluePawn_BP(TEXT("Class'/Game/Blueprints/Pawns/Player/BluePawn_BP.BluePawn_BP_C'"));
 	if (BluePawn_BP.Object != nullptr)
-		BluePlayer = (UClass*)BluePawn_BP.Object->GeneratedClass;
+		BluePlayer = BluePawn_BP.Object;
 }
 
 void ABluePlatform::BeginPlay()

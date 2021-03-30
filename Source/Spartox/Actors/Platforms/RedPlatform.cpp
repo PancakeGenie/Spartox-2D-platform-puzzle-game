@@ -6,9 +6,9 @@
 ARedPlatform::ARedPlatform()
 {
 	// Cast blueprint (reflection)
-	static ConstructorHelpers::FObjectFinder<UBlueprint> RedPawn_BP(TEXT("Blueprint'/Game/Blueprints/Pawns/Player/RedPawn_BP.RedPawn_BP'"));
+	static ConstructorHelpers::FObjectFinder<UClass> RedPawn_BP(TEXT("Class'/Game/Blueprints/Pawns/Player/RedPawn_BP.RedPawn_BP_C'"));
 	if (RedPawn_BP.Object != nullptr)
-		RedPlayer = (UClass*)RedPawn_BP.Object->GeneratedClass;
+		RedPlayer = RedPawn_BP.Object;
 }
 
 void ARedPlatform::BeginPlay()

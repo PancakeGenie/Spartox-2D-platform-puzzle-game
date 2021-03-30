@@ -3,30 +3,99 @@
 #include "Spartox_GameInstance.h"
 #include "../SaveGame/Spartox_SaveGame.h"
 #include "Kismet/GameplayStatics.h"
+#include "Misc/Paths.h"
+#include "Kismet/KismetStringLibrary.h"
+#include "../Global_Log.h"
 
-void USpartox_GameInstance::SaveGame(FString CurrentLevelName)
+DEFINE_LOG_CATEGORY_STATIC(GameInstanceLog, All, All)
+
+USpartox_GameInstance::USpartox_GameInstance()
 {
-	FString TempSaveSlotName = "New Game " + FString::FromInt(GameIndex);		// Fixed value for now, will change later.
-
-	// Cast to SaveGame and save current level name
-	SaveGameInstance = Cast<USpartox_SaveGame>(UGameplayStatics::CreateSaveGameObject(USpartox_SaveGame::StaticClass()));
-	SaveGameInstance->CurrentLevel = FName(*CurrentLevelName);
-
-	// Save to slot
-	UGameplayStatics::SaveGameToSlot(SaveGameInstance, TempSaveSlotName, GameIndex);
+	SaveGamesList = GetAllSaveGameSlotNames();
 }
 
-void USpartox_GameInstance::LoadGame(FString SaveSlotName)
+void USpartox_GameInstance::SaveGame(UPARAM(ref) const FString &SaveSlotName, UPARAM(ref) const int32 &Index, FString CurrentLevelName)
 {
-	SaveGameInstance = Cast<USpartox_SaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, 0));
+	SaveGameInstance = Cast<USpartox_SaveGame>(UGameplayStatics::CreateSaveGameObject(USpartox_SaveGame::StaticClass()));
 
-	// Check if SaveSlot is empty
-	if (!SaveGameInstance)
-	{
-		// Do something
-		return;
-	}
+	// What to save
+	SaveGameInstance->CurrentLevel = FName(*CurrentLevelName);
 
+	// Where to save it
+	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveSlotName, Index);
+}
+
+void USpartox_GameInstance::LoadGame(UPARAM(ref) const FString& SaveSlotName, UPARAM(ref) const int32& Index)
+{
+	SaveGameInstance = Cast<USpartox_SaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, Index));
+	
 	// Load level if it exists
 	UGameplayStatics::OpenLevel(GetWorld(), SaveGameInstance->CurrentLevel);
+}
+
+// Check if save game exists (whole array)
+bool USpartox_GameInstance::DoesSaveExist(UPARAM(ref) const TArray<FString> &getSaveGamesList)
+{
+	for (uint8 i = 0; i < getSaveGamesList.Num(); ++i)
+		if (getSaveGamesList[i] != "New Game")
+			return true;
+	
+
+	return false;
+}
+
+// Find .sav extention inside SaveGames folder and write them onto SavesPath array
+TArray<FString> USpartox_GameInstance::GetAllSaveGameSlotNames()
+{
+	// Temp Save list - exists troughout all game
+	static TArray<FString> SaveGames;
+
+	// Only do once
+	if (SaveGames.Num() <= 0)
+	{
+		const FString SavePath = FPaths::ProjectSavedDir();
+		const FString SaveExtention = "*.sav";
+
+		// Find files with .sav extention
+		IFileManager::Get().FindFilesRecursive(SaveGames, *SavePath, *SaveExtention, true, false, false);
+
+		// Remove extention
+		for (uint8 i = 0; i < SaveGames.Num(); ++i)
+			SaveGames[i] = FPaths::GetBaseFilename(SaveGames[i]);
+
+		// Get file string names
+		for (uint8 i = 0; i < 3; ++i)
+		{
+			// Sorting not necessary if array is bigger then loop value
+			if (SaveGames.Num() >= i)
+			{
+				// Sort current list
+				for (uint8 y = i + 1; y < SaveGames.Num(); ++y)
+				{
+					// Sorting not necessary if current 'y' element is empty
+					if (SaveGames[y].IsEmpty() == false)
+					{
+						const int32 &iVal = FCString::Atoi(*SaveGames[i].RightChop(SaveGames[i].Len() - 1));
+						const int32 &yVal = FCString::Atoi(*SaveGames[y].RightChop(SaveGames[y].Len() - 1));
+
+						// Switch element positions
+						if (iVal > yVal)
+						{
+							const FString temp = SaveGames[i];
+							SaveGames[i] = SaveGames[y];
+							SaveGames[y] = temp;
+						}
+					}
+				}
+			}
+
+			const FString &IndexExtention = "_" + FString::FromInt(i);
+
+			// See if element with specific index exists, if it doesn't insert empty element
+			if (SaveGames.Num() <= i || UKismetStringLibrary::FindSubstring(*SaveGames[i], *IndexExtention, false, false, 0) <= 0)
+				SaveGames.Insert("New Game", i);
+		}
+	}
+
+	return SaveGames;
 }
