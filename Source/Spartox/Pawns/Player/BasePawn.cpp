@@ -5,11 +5,11 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "../../GameMode/Spartox_GameModeGameplay.h"
 #include "Kismet/GameplayStatics.h"
-#include "PawnSkills.h"
 #include "DrawDebugHelpers.h"
 #include "Blueprint/UserWidget.h"
+
+#include "../../GameMode/Spartox_GameModeGameplay.h"
 #include "../../Widgets/ToggleMenu.h"
 
 // Static variable
@@ -43,9 +43,6 @@ ABasePawn::ABasePawn()
 	PlayerCamera_CAM = CreateDefaultSubobject<UCameraComponent>(TEXT("Player Camera"));
 	PlayerCamera_CAM->SetupAttachment(SpringArm_SA);
 
-	// Responsible for skills in the game
-	PawnSkillsRef = CreateDefaultSubobject<UPawnSkills>(TEXT("Player Skills"));
-
 	// Cast widget blueprint (reflection)
 	static ConstructorHelpers::FObjectFinder<UClass> ToggleMenu_BP(TEXT("Class'/Game/Blueprints/Widgets/Game/ToggleMenu_WBP.ToggleMenu_WBP_C'"));
 	if (ToggleMenu_BP.Object != nullptr)
@@ -72,7 +69,7 @@ void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInput)
 	PlayerInput->BindAction("Jump", EInputEvent::IE_Pressed, this, &ABasePawn::Jump);
 	PlayerInput->BindAction("Switch", EInputEvent::IE_Pressed, this, &ABasePawn::SwitchPlayer);
 	PlayerInput->BindAction("Reset", EInputEvent::IE_Pressed, this, &ABasePawn::Reset);
-	PlayerInput->BindAction("Menu", EInputEvent::IE_Pressed, this, &ABasePawn::ToggleMenu);
+	PlayerInput->BindAction("Menu", EInputEvent::IE_Released, this, &ABasePawn::ToggleMenu);
 }
 // ------------------------------------------------------------------------------------------------------------------------------
 
@@ -172,6 +169,7 @@ void ABasePawn::ToggleMenu()
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeUIOnly());
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = true;
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		ToggleWidgetRef->SetFocus();
 		IsToggleMenu = true;
 	}
 }

@@ -98,7 +98,7 @@ const int32 ASpartox_GameModeGameplay::GetCurrentLevel(const TArray<FName>& Game
 	CurrentLevelName = "/Game/Levels/GameLevels/" + CurrentLevelName;
 
 	// Find the current level
-	for (int32 i = 0; i < GameLevels.Num(); i++)
+	for (uint8 i = 0; i < GameLevels.Num(); ++i)
 		if (CurrentLevelName == GameLevels[i].ToString())
 			return i;
 

@@ -14,6 +14,7 @@ USpartox_GameInstance::USpartox_GameInstance()
 	SaveGamesList = GetAllSaveGameSlotNames();
 }
 
+// Function will save the current level to the game to slot (.sav). Game slot is based on player defined slot name, and assigned slot index.
 void USpartox_GameInstance::SaveGame(UPARAM(ref) const FString &SaveSlotName, UPARAM(ref) const int32 &Index, FString CurrentLevelName)
 {
 	SaveGameInstance = Cast<USpartox_SaveGame>(UGameplayStatics::CreateSaveGameObject(USpartox_SaveGame::StaticClass()));
@@ -25,12 +26,22 @@ void USpartox_GameInstance::SaveGame(UPARAM(ref) const FString &SaveSlotName, UP
 	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveSlotName, Index);
 }
 
+// Function will open a specific level based on save slot name and it's index
 void USpartox_GameInstance::LoadGame(UPARAM(ref) const FString& SaveSlotName, UPARAM(ref) const int32& Index)
 {
 	SaveGameInstance = Cast<USpartox_SaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, Index));
 	
 	// Load level if it exists
 	UGameplayStatics::OpenLevel(GetWorld(), SaveGameInstance->CurrentLevel);
+}
+
+void USpartox_GameInstance::DeleteGame(UPARAM(ref) const FString& SaveSlotName, UPARAM(ref) const int32& Index, UPARAM(ref) TArray<FString>& getSaveGamesList)
+{
+	// Delete Save slot in Saved/SaveGames dir
+	UGameplayStatics::DeleteGameInSlot(SaveSlotName, Index);
+
+	// Add "New Game" at deleted index
+	getSaveGamesList[Index] = "New Game";
 }
 
 // Check if save game exists (whole array)
@@ -53,7 +64,7 @@ TArray<FString> USpartox_GameInstance::GetAllSaveGameSlotNames()
 	// Only do once
 	if (SaveGames.Num() <= 0)
 	{
-		const FString SavePath = FPaths::ProjectSavedDir();
+		const FString SavePath = FPaths::ProjectSavedDir() + "SaveGames/";
 		const FString SaveExtention = "*.sav";
 
 		// Find files with .sav extention
@@ -66,8 +77,8 @@ TArray<FString> USpartox_GameInstance::GetAllSaveGameSlotNames()
 		// Get file string names
 		for (uint8 i = 0; i < 3; ++i)
 		{
-			// Sorting not necessary if array is bigger then loop value
-			if (SaveGames.Num() >= i)
+			// Sorting not necessary if array is smaller then loop value
+			if (SaveGames.Num() > i)
 			{
 				// Sort current list
 				for (uint8 y = i + 1; y < SaveGames.Num(); ++y)
@@ -75,8 +86,8 @@ TArray<FString> USpartox_GameInstance::GetAllSaveGameSlotNames()
 					// Sorting not necessary if current 'y' element is empty
 					if (SaveGames[y].IsEmpty() == false)
 					{
-						const int32 &iVal = FCString::Atoi(*SaveGames[i].RightChop(SaveGames[i].Len() - 1));
-						const int32 &yVal = FCString::Atoi(*SaveGames[y].RightChop(SaveGames[y].Len() - 1));
+						const uint8 iVal = FCString::Atoi(*SaveGames[i].RightChop(SaveGames[i].Len() - 1));
+						const uint8 yVal = FCString::Atoi(*SaveGames[y].RightChop(SaveGames[y].Len() - 1));
 
 						// Switch element positions
 						if (iVal > yVal)

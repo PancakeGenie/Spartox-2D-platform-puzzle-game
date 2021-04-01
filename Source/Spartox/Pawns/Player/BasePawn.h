@@ -48,9 +48,6 @@ protected:
 	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere, META = (AllowPrivateAccess = "true"))
 		class UCameraComponent* PlayerCamera_CAM;
 
-	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere)
-		class UPawnSkills* PawnSkillsRef;
-
 	UPROPERTY(Category = "HUD and UI", EditDefaultsOnly, BlueprintReadOnly)
 		TSubclassOf<class UToggleMenu> ToggleWidgetClass;
 	UPROPERTY(Category = "HUD and UI", EditDefaultsOnly, BlueprintReadOnly)

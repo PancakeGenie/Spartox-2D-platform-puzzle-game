@@ -32,6 +32,8 @@ public:
 		void SaveGame(UPARAM(ref) const FString& SaveSlotName, UPARAM(ref) const int32& Index, FString CurrentLevelName = "Level_00");
 	UFUNCTION(BlueprintCallable)
 		void LoadGame(UPARAM(ref) const FString &SaveSlotName, UPARAM(ref) const int32& Index);
+	UFUNCTION(BlueprintCallable)
+		void DeleteGame(UPARAM(ref) const FString& SaveSlotName, UPARAM(ref) const int32& Index, UPARAM(ref) TArray<FString>& getSaveGamesList);
 
 	UFUNCTION(BlueprintCallable)
 		bool DoesSaveExist(UPARAM(ref) const TArray<FString> &getSaveGamesList);
