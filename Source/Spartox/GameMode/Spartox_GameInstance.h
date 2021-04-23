@@ -6,7 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "Spartox_GameInstance.generated.h"
 
-#define int SAVE_NUM {3}
+#define MAXSAVES 3
 
 UCLASS()
 class SPARTOX_API USpartox_GameInstance : public UGameInstance
@@ -39,6 +39,9 @@ public:
 		bool DoesSaveExist(UPARAM(ref) const TArray<FString> &getSaveGamesList);
 
 private:
+	// Variables
+	uint8 MaxSaveGames{ MAXSAVES };
+
 	// Functions
 	static TArray<FString> GetAllSaveGameSlotNames();
 

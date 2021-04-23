@@ -18,7 +18,7 @@ public:
 private:
 	// Variables
 	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere, META = (AllowPrivateAccess = "true"))
-		class UBoxComponent* PlatformCollision_COL;
+		class UBoxComponent* Platform_COL;
 	UPROPERTY(Category = "Components", BlueprintReadOnly, VisibleAnywhere, META = (AllowPrivateAccess = "true"))
-		UStaticMeshComponent* PlatformMesh_SM;
+		UStaticMeshComponent* Platform_SM;
 };

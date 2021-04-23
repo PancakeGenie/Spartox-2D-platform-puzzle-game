@@ -34,7 +34,7 @@ AStaticTurret::AStaticTurret()
 	BulletArrow_ARW->SetupAttachment(CannonMesh_SM);
 
 	// Cast blueprint (reflection)
-	static ConstructorHelpers::FObjectFinder<UClass> Bullet_BP(TEXT("Class'/Game/Blueprints/AI/Bullet/Bullet_BP.Bullet_BP_C'"));
+	static ConstructorHelpers::FObjectFinder<UClass> Bullet_BP(TEXT("Class'/Game/Blueprints/Actors/Bullet/Bullet_BP.Bullet_BP_C'"));
 	if (Bullet_BP.Object != nullptr)
 		Bullet = Bullet_BP.Object;
 }

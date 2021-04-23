@@ -49,9 +49,9 @@ protected:
 		class UCameraComponent* PlayerCamera_CAM;
 
 	UPROPERTY(Category = "HUD and UI", EditDefaultsOnly, BlueprintReadOnly)
-		TSubclassOf<class UToggleMenu> ToggleWidgetClass;
+		TSubclassOf<class UUserWidget> ToggleWidgetClass;
 	UPROPERTY(Category = "HUD and UI", EditDefaultsOnly, BlueprintReadOnly)
-		class UToggleMenu* ToggleWidgetRef;
+		class UUserWidget* ToggleMenuRef;
 
 	// Functions
 	virtual void BeginPlay();
@@ -80,8 +80,8 @@ private:
 	// Functions
 	void MoveRight(float ScaleValue);
 	void Jump();
-	bool MoveCollision(float& MovementDirection, float LineTrace_ZPosition);
-	bool CanJump(float LineTrace_XPosition);
+	bool MoveCollision(float& MovementDirection);
+	bool CanJump();
 	void Reset();
 	void ToggleMenu();
 	void ToggleMenuInit();

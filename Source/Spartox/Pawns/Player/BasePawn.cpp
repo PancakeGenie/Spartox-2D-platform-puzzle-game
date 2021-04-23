@@ -10,7 +10,6 @@
 #include "Blueprint/UserWidget.h"
 
 #include "../../GameMode/Spartox_GameModeGameplay.h"
-#include "../../Widgets/ToggleMenu.h"
 
 // Static variable
 bool ABasePawn::isRedPawn{ false };
@@ -55,6 +54,7 @@ void ABasePawn::BeginPlay()
 
 	GameModeRef = Cast<ASpartox_GameModeGameplay>(UGameplayStatics::GetGameMode(this));
 
+	// Create in game menu and hide it
 	ToggleMenuInit();
 }
 
@@ -81,7 +81,7 @@ void ABasePawn::MoveRight(float ScaleValue)
 	if (ScaleValue != 0.f && canMove == true && isPlayerAlive == true)
 	{
 		// Checker, responsible for determining if player can move. 
-		if (MoveCollision(ScaleValue, -MeshCollision_COL->GetScaledBoxExtent().Z) == true || MoveCollision(ScaleValue, MeshCollision_COL->GetScaledBoxExtent().Z) == true)
+		if (MoveCollision(ScaleValue) == true)
 			return;
 
 		const FVector vCalcMovement{ GetWorld()->GetDeltaSeconds() * ScaleValue * fMovementSpeed, 0.f, 0.f };
@@ -90,21 +90,21 @@ void ABasePawn::MoveRight(float ScaleValue)
 }
 
 // Function that returns true if collision happened on map. Prevents player from "bugging" out inside objects.
-bool ABasePawn::MoveCollision(float& MovementDirection, float LineTrace_ZPosition)
+bool ABasePawn::MoveCollision(float& MovementDirection)
 {
 	FHitResult HitCollision;
-	FVector StartLocation{ RootComponent->GetComponentLocation().X, 0.f, RootComponent->GetComponentLocation().Z - LineTrace_ZPosition + 0.1f };
+	FVector StartLocation;
 	FVector EndLocation;
 	FCollisionQueryParams TraceParams;
 
 	// End length of vector depends on MovementDirection vector (basically if player is moving right, EndLocation should be right of player)
-	MovementDirection > 0 ? EndLocation = FVector(StartLocation.X + MeshCollision_COL->GetScaledBoxExtent().X + X_CollisionRange, 0.f, StartLocation.Z)
-						  : EndLocation = FVector(StartLocation.X - MeshCollision_COL->GetScaledBoxExtent().X - X_CollisionRange, 0.f, StartLocation.Z);
+	MovementDirection > 0 ? StartLocation = FVector(RootComponent->GetComponentLocation().X + MeshCollision_COL->GetScaledBoxExtent().X + X_CollisionRange, 0.f, RootComponent->GetComponentLocation().Z + MeshCollision_COL->GetScaledBoxExtent().Z)
+						  : StartLocation = FVector(RootComponent->GetComponentLocation().X - MeshCollision_COL->GetScaledBoxExtent().X - X_CollisionRange, 0.f, RootComponent->GetComponentLocation().Z + MeshCollision_COL->GetScaledBoxExtent().Z);
 
-	TraceParams.AddIgnoredActor(this);
+	EndLocation = FVector(StartLocation.X, 0.f, StartLocation.Z - (2 * MeshCollision_COL->GetScaledBoxExtent().Z) + 0.1f);
 
 	// For testing purposes only.
-	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 2.f);
+	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 500.f);
 
 	return GetWorld()->LineTraceSingleByChannel(HitCollision, StartLocation, EndLocation, ECC_Pawn, TraceParams);
 }
@@ -114,9 +114,7 @@ void ABasePawn::Jump()
 	if (isPlayerAlive == true && canJump == true)
 	{	
 		// Checker, responsible for determining if player can jump. 
-		if (CanJump(-MeshCollision_COL->GetScaledBoxExtent().Z) == false && 
-			CanJump(MeshCollision_COL->GetScaledBoxExtent().Z) == false && 
-			CanJump(0) == false)
+		if (CanJump() == false)
 			return;
 
 		const FVector vCalcJump{ 0.f, 0.f, fJumpForce };
@@ -127,14 +125,12 @@ void ABasePawn::Jump()
 }
 
 // Function that returns true if collision happened on map. Allows player to jump again.
-bool ABasePawn::CanJump(float LineTrace_XPosition)
+bool ABasePawn::CanJump()
 {
 	FHitResult HitCollision;
-	FVector StartLocation{ RootComponent->GetComponentLocation().X - LineTrace_XPosition, 0.f, RootComponent->GetComponentLocation().Z};
-	FVector EndLocation{StartLocation.X, 0.f, StartLocation.Z - MeshCollision_COL->GetScaledBoxExtent().Z - Z_CollisionRange };
+	FVector StartLocation{ RootComponent->GetComponentLocation().X - MeshCollision_COL->GetScaledBoxExtent().X, 0.f, RootComponent->GetComponentLocation().Z - MeshCollision_COL->GetScaledBoxExtent().Z - Z_CollisionRange };
+	FVector EndLocation{ RootComponent->GetComponentLocation().X + MeshCollision_COL->GetScaledBoxExtent().X, 0.f, StartLocation.Z };
 	FCollisionQueryParams TraceParams;
-
-	TraceParams.AddIgnoredActor(this);
 
 	// For testing purposes only.
 	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, false, 2.f);
@@ -165,23 +161,23 @@ void ABasePawn::ToggleMenu()
 {
 	if (IsToggleMenu == false)
 	{
-		ToggleWidgetRef->SetVisibility(ESlateVisibility::Visible);
+		ToggleMenuRef->SetVisibility(ESlateVisibility::Visible);
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeUIOnly());
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = true;
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
-		ToggleWidgetRef->SetFocus();
+		ToggleMenuRef->SetFocus();
 		IsToggleMenu = true;
 	}
 }
 
 void ABasePawn::ToggleMenuInit()
 {
-	ToggleWidgetRef = CreateWidget<UToggleMenu>(GetWorld(), ToggleWidgetClass);
-	if (ToggleWidgetRef == nullptr)
+	ToggleMenuRef = CreateWidget<UUserWidget>(GetWorld(), ToggleWidgetClass);
+	if (ToggleMenuRef == nullptr)
 		return;
 
-	ToggleWidgetRef->AddToViewport();						  // Add widget to viewport
-	ToggleWidgetRef->SetVisibility(ESlateVisibility::Hidden); // Set it to hidden so its not open on spawn.
+	ToggleMenuRef->AddToViewport();						  // Add widget to viewport
+	ToggleMenuRef->SetVisibility(ESlateVisibility::Hidden); // Set it to hidden so its not open on spawn.
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------

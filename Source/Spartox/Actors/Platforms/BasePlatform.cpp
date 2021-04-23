@@ -12,10 +12,10 @@ ABasePlatform::ABasePlatform()
 	// Create all objects and link them
 	// ---------------------------------
 	// Responsible for collision detection
-	PlatformCollision_COL = CreateDefaultSubobject<UBoxComponent>(TEXT("Platform Collision"));
-	RootComponent = PlatformCollision_COL;
+	Platform_COL = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision Box"));
+	RootComponent = Platform_COL;
 
 	// Visible mesh to player
-	PlatformMesh_SM = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Box Mesh"));
-	PlatformMesh_SM->SetupAttachment(RootComponent);
+	Platform_SM = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Box Mesh"));
+	Platform_SM->SetupAttachment(RootComponent);
 }

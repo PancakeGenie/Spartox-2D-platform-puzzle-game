@@ -42,13 +42,14 @@ void ABullet::BeginPlay()
 	GameModeRef = Cast<ASpartox_GameModeGameplay>(UGameplayStatics::GetGameMode(this));
 
 	// Dynamic (OnHit) delegate
-	BulletDestroyCollision_COL->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnOverlap);
+	BulletDestroyCollision_COL->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnOverlapFront);
+	BulletWalkOnCollision_COL->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnOverlapTop);
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------
 // Actor interaction on overlap -------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------
-void ABullet::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool FromSweep, const FHitResult& Hit)
+void ABullet::OnOverlapFront(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool FromSweep, const FHitResult& Hit)
 {
 	if (OtherActor == RedPawn)
 	{
@@ -56,6 +57,12 @@ void ABullet::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherA
 		return;
 	}
 
+	if (OtherActor == BluePawn)
+		GameModeRef->ResetCurrentLevel();
+}
+
+void ABullet::OnOverlapTop(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool FromSweep, const FHitResult& Hit)
+{
 	if (OtherActor == BluePawn)
 		GameModeRef->ResetCurrentLevel();
 }

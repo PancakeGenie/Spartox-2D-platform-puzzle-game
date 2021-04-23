@@ -64,7 +64,9 @@ TArray<FString> USpartox_GameInstance::GetAllSaveGameSlotNames()
 	// Only do once
 	if (SaveGames.Num() <= 0)
 	{
+		// For editor/For Shipping
 		const FString SavePath = FPaths::ProjectSavedDir() + "SaveGames/";
+		//const FString SavePath = FPlatformProcess::UserSettingsDir();
 		const FString SaveExtention = "*.sav";
 
 		// Find files with .sav extention

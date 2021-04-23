@@ -10,10 +10,6 @@ DEFINE_LOG_CATEGORY_STATIC(TriggerBoxLog, All, All)
 
 void ABaseTriggerBox::BeginPlay()
 {
-	// Cast players
-	RedPawn = Cast<ARedPawn>(UGameplayStatics::GetActorOfClass(GetWorld(), ARedPawn::StaticClass()));
-	BluePawn = Cast<ABluePawn>(UGameplayStatics::GetActorOfClass(GetWorld(), ABluePawn::StaticClass()));
-
 	// Dynamic (OnOverlap) delegate
 	OnActorBeginOverlap.AddDynamic(this, &ABaseTriggerBox::OnOverlapBegin);
 	OnActorEndOverlap.AddDynamic(this, &ABaseTriggerBox::OnOverlapEnd);
@@ -28,8 +24,9 @@ void ABaseTriggerBox::OnOverlapBegin(AActor* OtherActor, AActor* PlayerActor)
 	if (bMultipleOverlaps == true)
 	{
 		// Check trigger box was overlapped and if overlapping actor was player pawn
-		if (PlayerActor == BluePawn || PlayerActor == RedPawn)
+		if (PlayerActor == UGameplayStatics::GetPlayerPawn(GetWorld(), 0))
 			OnTriggerOverlap();			// Blueprint implementation
+
 	}
 }
 
@@ -38,7 +35,7 @@ void ABaseTriggerBox::OnOverlapEnd(AActor* OtherActor, AActor* PlayerActor)
 	if (bMultipleOverlaps == true)
 	{
 		// Check trigger box was overlapped and if overlapping actor was player pawn
-		if (PlayerActor == BluePawn || PlayerActor == RedPawn)
+		if (PlayerActor == UGameplayStatics::GetPlayerPawn(GetWorld(), 0))
 			OnTriggerEndOverlap();			// Blueprint implementation
 	}
 }
